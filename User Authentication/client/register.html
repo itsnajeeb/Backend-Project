@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(229, 229, 228);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .content {
+        background-color: white;
+        width: 600px;
+        padding: 50px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px;
+    }
+
+    .input-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .content h1 {
+        font-size: 2.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .input-container .input_content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .input-container .input_content>label {
+        display: block;
+        font-size: 1.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .input-container .input_content input {
+        padding: 10px;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        border: 1px solid rebeccapurple;
+        font-size: 18px;
+    }
+
+    form>button {
+        width: 100%;
+        margin-top: 2rem;
+        padding: 15px;
+        cursor: pointer;
+        background-color: rgb(77, 77, 219);
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .link {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        margin-top: 1rem;
+        font-size: 18px;
+    }
+
+    .message_div {
+        font-size: 20px;
+        margin-bottom: 20px;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        color: white;
+        background: green;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <form action="" method="post" id="form_submit">
+                <div class="message_div" id="message_div"></div>
+                <h1>Register Yourself </h1>
+                <div class="input-container">
+                    <div class="input_content">
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" placeholder="Your Name">
+                    </div>
+
+                    <div class="input_content">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" placeholder="Your Username">
+                    </div>
+                    <div class="input_content">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id="email" placeholder="Your Email">
+                    </div>
+                    <div class="input_content">
+                        <label for="password">Password</label>
+                        <input type="text" name="password" id="password" placeholder="Your Password">
+                    </div>
+                    <div class="input_content">
+                        <label for="bio">Bio</label>
+                        <input type="text" name="bio" id="bio" placeholder="Your Your Bio">
+                    </div>
+                </div>
+                <button class="submit" id="submit">Signup</button>
+                <div class="link">
+                    <a href="#">Forgot Password</a>
+                    <a href="/login.html">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let formSubmitted = document.getElementById('form_submit')
+        let msgDiv = document.getElementById('message_div')
+        formSubmitted.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // let name = document.getElementById('name').value
+            // let username = document.getElementById('username').value
+            // let email = document.getElementById('email').value
+            // let password = document.getElementById('password').value
+            // let bio = document.getElementById('bio').value
+
+            const FormData = {
+                name: formSubmitted.name.value,
+                username: formSubmitted.username.value,
+                email: formSubmitted.email.value,
+                password: formSubmitted.password.value,
+                bio: formSubmitted.bio.value,
+            }
+
+            try {
+                const res = await fetch('http://localhost:8081/pw-auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(FormData)
+                })
+                const data = await res.json();
+                console.log(data);
+                if (data.success) {
+                    msgDiv.textContent = "Sign up successful! Redirect to login",
+                        msgDiv.style.background = "green",
+                    msgDiv.style.padding = "10px 10px",
+
+                    setTimeout(() => {
+                        window.location.href = '/client/login.html';
+                    }, 1500);
+                }
+                else {
+                    msgDiv.textContent = data.message || "Something is wrong !",
+                        msgDiv.style.background = "red",
+                        msgDiv.style.padding = "10px 10px"
+                }
+
+            }
+            catch (e) {
+                msgDiv.textContent = e.message || "Server Error ! Please try again",
+                    msgDiv.style.background = "red",
+                    msgDiv.style.padding = "10px 10px"
+            }
+
+
+        })
+    </script>
+</body>
+
+</html>

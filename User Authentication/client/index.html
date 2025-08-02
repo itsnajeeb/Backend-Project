@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    form {
+        width: 100%;
+        text-align: center;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(229, 229, 228);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .content {
+        background-color: white;
+        width: 600px;
+        padding: 50px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .input-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .content h1 {
+        font-size: 2.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .profile_image {
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+    }
+
+    .profile_info {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .profile_info p {
+        font-size: 20px;
+        font-weight: bold;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <form action="" method="post">
+                <h1>Instagram Login</h1>
+                <img class="profile_image"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlQPZwYZawK7F-D3xRfcc5xImaeWuQL6h0AQ&s"
+                    alt="">
+                <div class="profile_info">
+                    <p id="name"></p>
+                    <p id="username"></p>
+                    <p id="content"></p>
+                    <p id="email"></p>
+                    <p>Followers : 10K</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const res = await fetch('http://localhost:8081/pw-auth/profile', {
+                    method: 'POST',
+                    credentials: 'include',
+                });
+                const data = await res.json();
+                console.log(data);
+
+                console.log(data.user.name);
+                if (data.success) {
+                    document.getElementById('name').textContent = data.user.name
+                    document.getElementById('username').textContent = data.user.username
+                    document.getElementById('content').textContent = data.user.bio
+                    document.getElementById('email').textContent = data.user.email
+
+                }
+                else {
+                    alert("You are not Authorized. Please Login")
+                    window.location.href = "/client/login.html"
+                }
+
+            }
+            catch(e){
+                console.log("Error Fetching Profile data ", err.message);
+                window.location.href="/client/login.html"
+            }
+        })
+    </script>
+</body>
+
+</html>

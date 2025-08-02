@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+    }
+
+    form {
+        width: 100%;
+    }
+
+    .container {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(229, 229, 228);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .content {
+        background-color: white;
+        width: 600px;
+        padding: 50px 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-radius: 10px;
+    }
+
+    .input-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .content h1 {
+        font-size: 2.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .input-container .input_content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .input-container .input_content>label {
+        display: block;
+        font-size: 1.5rem;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .input-container .input_content input {
+        padding: 10px;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        border: 1px solid rebeccapurple;
+        font-size: 18px;
+    }
+
+    form>button {
+        width: 100%;
+        margin-top: 2rem;
+        padding: 15px;
+        cursor: pointer;
+        background-color: rgb(77, 77, 219);
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .link {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        margin-top: 1rem;
+        font-size: 18px;
+    }
+
+    .div_message {
+        font-size: 20px;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-weight: 600;
+        color: white;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="content">
+            <form action="" method="post" id="form">
+                <div class="div_message" id="div_message">div_message</div>
+                <h1>Instagram Login</h1>
+                <div class="input-container">
+                    <div class="input_content">
+                        <label for="username">Email</label>
+                        <input type="text" name="username" placeholder="Your Username">
+                    </div>
+
+                    <div class="input_content">
+                        <label for="password">Password</label>
+                        <input type="text" name="password" placeholder="Your Password">
+                    </div>
+                </div>
+                <button type="submit">Login</button>
+                <div class="link">
+                    <a href="#">Forgot Password</a>
+                    <a href="/client/register.html">Signup</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        let formSubmit = document.getElementById('form')
+        let divMsg = document.getElementById('div_message')
+        formSubmit.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            let formData = {
+                username: formSubmit.username.value,
+                password: formSubmit.password.value
+            }
+            console.log(formData);
+
+            try {
+                const res = await fetch('http://localhost:8081/pw-auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(formData)
+                })
+                const data = await res.json();
+                if (data.success) {
+                    divMsg.textContent = "Successfully Loggedin ! ",
+                        divMsg.style.background = "green",
+                        divMsg.style.padding = "10px 10px",
+                        window.location.href = '/client/index.html'
+                }
+
+                else {
+                    divMsg.textContent = data.message || "Invalid Credentials",
+                        divMsg.style.background = "red",
+                        divMsg.style.padding = "10px 10px"
+                }
+
+            }
+            catch (e) {
+                divMsg.textContent = e.message || "Server Error "
+                divMsg.style.background = "red",
+                    divMsg.style.padding = "10px 10px"
+            }
+        })
+
+    </script>
+</body>
+
+</html>
